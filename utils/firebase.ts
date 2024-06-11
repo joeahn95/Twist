@@ -31,16 +31,19 @@ async function requestPermission() {
       getToken(messaging, {
         vapidKey:
           "BGt7Wk8aCGz138VJYzZQvkwbVswsgIxi2uRfQE3M_EavM5C3HyJUc5FxPwlX9gl5PooUEtt3LIkgRHbn5L3aXiQ",
-      }).then((currentToken) => {
+      }).then((currentToken: any) => {
         if (currentToken) {
           console.log("currentToken: ", currentToken);
 
           // update FCM token for user
+          console.log(user);
           if (user) {
-            supabase.from("user_public").update({ fcm_token: currentToken }).eq(
+            supabase.from("user_public").update({
+              fcm_token: currentToken,
+            }).eq(
               "user_id",
               user.id,
-            );
+            ).then((res) => console.log(res));
           }
         } else {
           console.log("Can not get token");
