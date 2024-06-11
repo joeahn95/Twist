@@ -40,3 +40,14 @@
     transform: translateY(0);
   }
 }
+
+.channelCards {
+  @apply flex
+  justify-start
+  w-full;
+}
+
+.card {
+  @apply mx-2
+  w-1/4;
+}
