@@ -8,28 +8,11 @@ import ChannelCard from "@/components/ChannelCard";
 
 const Channels = () => {
   const [channels, setChannels] = useState<any[] | null>(null);
-  const [favList, setFavList] = useState<any[] | null>(null);
   const supabase = createClient();
 
   const getChannels = async () => {
     const { data } = await supabase.from("user_public").select();
     setChannels(data);
-  };
-
-  const getFavs = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    // if a user is authenticated, grab user's favorites
-    if (user) {
-      const { data } = await supabase
-        .from("favorites")
-        .select()
-        .eq("user_id", user.id);
-
-      setFavList(data);
-    }
   };
 
   const channelList = channels?.map((channel, idx) => {
@@ -44,7 +27,6 @@ const Channels = () => {
 
   useEffect(() => {
     getChannels();
-    getFavs();
   }, []);
 
   return (

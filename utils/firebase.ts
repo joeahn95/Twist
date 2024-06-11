@@ -36,7 +36,6 @@ async function requestPermission() {
           console.log("currentToken: ", currentToken);
 
           // update FCM token for user
-          console.log(user);
           if (user) {
             supabase.from("user_public").update({
               fcm_token: currentToken,
