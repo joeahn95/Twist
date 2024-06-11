@@ -2,6 +2,7 @@
 
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { createClient } from "@/utils/supabase/client";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOeG7mYOUN1B2frL9X-DzSpmrVkp2yrCc",
@@ -12,7 +13,14 @@ const firebaseConfig = {
   appId: "1:908636619562:web:1d97ee54940c20b0cb9453",
 };
 
-function requestPermission() {
+async function requestPermission() {
+  const supabase = createClient();
+
+  // get user to update FCM Token
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   console.log("Requesting permission...");
   Notification.requestPermission().then((permission) => {
     if (permission === "granted") {
@@ -26,6 +34,14 @@ function requestPermission() {
       }).then((currentToken) => {
         if (currentToken) {
           console.log("currentToken: ", currentToken);
+
+          // update FCM token for user
+          if (user) {
+            supabase.from("user_public").update({ fcm_token: currentToken }).eq(
+              "user_id",
+              user.id,
+            );
+          }
         } else {
           console.log("Can not get token");
         }
@@ -35,9 +51,9 @@ function requestPermission() {
       onMessage(messaging, (payload) => {
         console.log("Message received. ", payload);
         // Customize the notification here
-        const notificationTitle = payload.notification.title;
+        const notificationTitle = payload?.notification?.title! || "No Title";
         const notificationOptions = {
-          body: payload.notification.body,
+          body: payload?.notification?.body,
         };
 
         if (Notification.permission === "granted") {
