@@ -1,7 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { JWT } from "npm:google-auth-library@9";
 import serviceAccount from "../service-account.json" with { type: "json" };
-import { load } from "https://deno.land/std@0.224.0/dotenv/mod.ts";
 import { config } from "https://deno.land/x/dotenv/mod.ts";
 
 // Load environment variables from .env file
